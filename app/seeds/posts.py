@@ -8,7 +8,7 @@ def seed_posts():
     post = Post(
         user_id=demo.id,
         title="My First Post",
-        description="This is a description of my first post. I'm excited to share it with you all!",
+        description="Hello I'm new here",
         hidden=False,
         views=0
     )
