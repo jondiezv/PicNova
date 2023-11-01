@@ -18,8 +18,12 @@ const LandingPage = () => {
         <ul>
           {posts.map((post) => (
             <li key={post.id}>
+              {post.image_urls.length > 0 && (
+                <img src={post.image_urls[0]} alt="Post Image" />
+              )}
               <h3>{post.title}</h3>
               <p>{post.description}</p>
+              <p>{post.views} views</p>
             </li>
           ))}
         </ul>
