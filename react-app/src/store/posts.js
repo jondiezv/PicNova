@@ -1,5 +1,7 @@
 const GET_ALL_POSTS = "posts/GET_ALL_POSTS";
 const GET_POST_BY_ID = "posts/GET_POST_BY_ID";
+const CREATE_POST = "posts/CREATE_POST";
+const DELETE_POST = "posts/DELETE_POST";
 
 const getAllPostsAction = (posts) => ({
   type: GET_ALL_POSTS,
@@ -9,6 +11,15 @@ const getAllPostsAction = (posts) => ({
 const getPostByIdAction = (post) => ({
   type: GET_POST_BY_ID,
   payload: post,
+});
+
+const createPostAction = (post) => ({
+  type: CREATE_POST,
+  payload: post,
+});
+
+const deletePostAction = () => ({
+  type: DELETE_POST,
 });
 
 export const getAllPosts = () => async (dispatch) => {
@@ -33,9 +44,26 @@ export const getPostById = (postId) => async (dispatch) => {
   }
 };
 
+export const createPost = (formData) => async (dispatch) => {
+  try {
+    const response = await fetch("/api/posts/create", {
+      method: "POST",
+      body: formData,
+    });
+    if (!response.ok) throw response;
+    const data = await response.json();
+    dispatch(createPostAction(data));
+    return data;
+  } catch (error) {
+    console.error("Error creating a post:", error);
+    throw error;
+  }
+};
+
 const initialState = {
   allPosts: [],
   currentPost: null,
+  createdPost: null,
 };
 
 const postsReducer = (state = initialState, action) => {
@@ -49,6 +77,11 @@ const postsReducer = (state = initialState, action) => {
       return {
         ...state,
         currentPost: action.payload,
+      };
+    case CREATE_POST:
+      return {
+        ...state,
+        createdPost: action.payload,
       };
     default:
       return state;

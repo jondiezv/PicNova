@@ -7,6 +7,7 @@ import { authenticate } from "./store/session";
 import Navigation from "./components/Navigation";
 import LandingPage from "./components/Landing";
 import PostDetails from "./components/PostDetails";
+import Upload from "./components/Upload";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,6 +26,9 @@ function App() {
           </Route>
           <Route path="/signup">
             <SignupFormPage />
+          </Route>
+          <Route path="/upload">
+            <Upload />
           </Route>
           <Route path="/post/:id(\d+)">
             <PostDetails />
