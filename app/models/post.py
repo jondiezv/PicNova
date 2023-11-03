@@ -14,9 +14,11 @@ class Post(db.Model):
     hidden = db.Column(db.Boolean, default=False, nullable=False)
     views = db.Column(db.Integer, default=0, nullable=False)
 
+
+
     user = db.relationship('User', back_populates='posts')
     comments = db.relationship('Comment', back_populates='post')
     likes = db.relationship('Like', back_populates='post')
     favorites = db.relationship('Favorite', back_populates='post')
-    images = db.relationship('Image', back_populates='post')
+    images = db.relationship('Image', back_populates='post', cascade='all, delete-orphan')
     tag = db.relationship('Tag', back_populates='posts')

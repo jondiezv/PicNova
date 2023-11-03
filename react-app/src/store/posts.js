@@ -60,10 +60,24 @@ export const createPost = (formData) => async (dispatch) => {
   }
 };
 
+export const deletePost = (postId) => async (dispatch) => {
+  try {
+    const response = await fetch(`/api/posts/${postId}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) throw response;
+    dispatch(deletePostAction());
+    console.log("Post deleted successfully");
+  } catch (error) {
+    console.error("Error deleting post:", error);
+  }
+};
+
 const initialState = {
   allPosts: [],
   currentPost: null,
   createdPost: null,
+  deletedPost: null,
 };
 
 const postsReducer = (state = initialState, action) => {
