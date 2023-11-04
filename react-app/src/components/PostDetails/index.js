@@ -21,6 +21,10 @@ const PostDetails = () => {
     setShowDeleteModal(true);
   };
 
+  const handleEditClick = () => {
+    history.push(`/post/${id}/edit`);
+  };
+
   const handleCancelClick = () => {
     setShowDeleteModal(false);
     setModalContent(null);
@@ -39,11 +43,12 @@ const PostDetails = () => {
           <h2>{currentPost.title}</h2>
           <p>{currentPost.description}</p>
           <div>
-            {currentPost.image_urls.map((imageUrl) => (
+            {currentPost.image_urls?.map((imageUrl) => (
               <img key={imageUrl} src={imageUrl} alt="Post Image" />
             ))}
           </div>
           <button onClick={handleDeleteClick}>Delete Post</button>
+          <button onClick={handleEditClick}>Edit</button>{" "}
           {showDeleteModal && (
             <DeletePostModal
               postId={currentPost.id}

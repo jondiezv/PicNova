@@ -5,6 +5,7 @@ from app.api.aws_helper import (
     upload_file_to_s3, get_unique_filename, remove_file_from_s3
 )
 from app.forms.createpost_form import CreatePost
+from app.forms.editpost_form import EditPost
 from flask import current_app
 from botocore.exceptions import ClientError
 
@@ -126,3 +127,32 @@ def delete_post(post_id):
         db.session.rollback()
         current_app.logger.error(f'Unexpected error: {e}')
         return jsonify({'error': str(e)}), 500
+
+
+@posts.route('/<int:post_id>/edit', methods=['PUT'])
+@login_required
+def edit_post(post_id):
+    form = EditPost()
+    form["csrf_token"].data = request.cookies["csrf_token"]
+
+    post = Post.query.get(post_id)
+
+    if post is None:
+        return jsonify({'error': 'Post not found'}), 404
+
+    if post.user_id != current_user.id:
+        return jsonify({'error': 'You are not authorized to edit this post'}), 403
+
+    if form.validate_on_submit():
+        try:
+            post.title = form.data['title']
+            post.description = form.data['description']
+            post.hidden = form.data.get('hidden', False)
+            db.session.commit()
+            return jsonify({'message': 'Post edited successfully'}), 200
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid form data', 'form_errors': form.errors}), 400

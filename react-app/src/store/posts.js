@@ -2,6 +2,7 @@ const GET_ALL_POSTS = "posts/GET_ALL_POSTS";
 const GET_POST_BY_ID = "posts/GET_POST_BY_ID";
 const CREATE_POST = "posts/CREATE_POST";
 const DELETE_POST = "posts/DELETE_POST";
+const EDIT_POST = "posts/EDIT_POST";
 
 const getAllPostsAction = (posts) => ({
   type: GET_ALL_POSTS,
@@ -20,6 +21,11 @@ const createPostAction = (post) => ({
 
 const deletePostAction = () => ({
   type: DELETE_POST,
+});
+
+const editPostAction = (post) => ({
+  type: EDIT_POST,
+  payload: post,
 });
 
 export const getAllPosts = () => async (dispatch) => {
@@ -73,6 +79,24 @@ export const deletePost = (postId) => async (dispatch) => {
   }
 };
 
+export const editPost = (postId, formData) => async (dispatch) => {
+  try {
+    const response = await fetch(`/api/posts/${postId}/edit`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    if (!response.ok) throw response;
+    const data = await response.json();
+    dispatch(editPostAction(data));
+    console.log("Post edited successfully");
+  } catch (error) {
+    console.error("Error editing post:", error);
+  }
+};
+
 const initialState = {
   allPosts: [],
   currentPost: null,
@@ -96,6 +120,14 @@ const postsReducer = (state = initialState, action) => {
       return {
         ...state,
         createdPost: action.payload,
+      };
+    case EDIT_POST:
+      return {
+        ...state,
+        allPosts: state.allPosts.map((post) =>
+          post.id === action.payload.id ? action.payload : post
+        ),
+        currentPost: action.payload,
       };
     default:
       return state;
