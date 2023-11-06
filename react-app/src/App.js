@@ -8,6 +8,7 @@ import Navigation from "./components/Navigation";
 import LandingPage from "./components/Landing";
 import PostDetails from "./components/PostDetails";
 import Upload from "./components/Upload";
+import EditPost from "./components/EditPost";
 
 function App() {
   const dispatch = useDispatch();
@@ -30,7 +31,11 @@ function App() {
           <Route path="/upload">
             <Upload />
           </Route>
-          <Route path="/post/:id(\d+)">
+          <Route
+            path="/post/:id/edit"
+            render={(routeProps) => <EditPost {...routeProps} />}
+          />
+          <Route exact path="/post/:id(\d+)">
             <PostDetails />
           </Route>
           <Route path="/">
