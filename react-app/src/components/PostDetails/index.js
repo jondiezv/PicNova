@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useHistory } from "react-router-dom";
 import { getPostById } from "../../store/posts";
-import { getCommentsByPostId } from "../../store/comments";
+import { getCommentsByPostId, createComment } from "../../store/comments";
 import DeletePostModal from "../DeletePostModal";
 import { useModal } from "../../context/Modal";
+import EditCommentModal from "../EditCommentModal";
+
+const maxCommentLength = 80;
 
 const PostDetails = () => {
   const { id } = useParams();
@@ -15,6 +18,9 @@ const PostDetails = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { closeModal, setModalContent } = useModal();
   const history = useHistory();
+
+  const [commentText, setCommentText] = useState("");
+  const [commentLength, setCommentLength] = useState(0);
 
   useEffect(() => {
     dispatch(getPostById(id));
@@ -37,10 +43,27 @@ const PostDetails = () => {
   const isUserLoggedIn = !!user;
   const isCurrentUserPost = isUserLoggedIn && currentPost?.user_id === user?.id;
 
-  useEffect(() => {
-    console.log("currentPost:", currentPost);
-    console.log("comments:", comments);
-  }, [currentPost, comments]);
+  const handleCommentSubmit = () => {
+    if (commentText.trim() !== "" && commentText.length <= maxCommentLength) {
+      dispatch(createComment(id, commentText));
+      setCommentText("");
+      setCommentLength(0);
+    }
+  };
+
+  const handleCommentEdit = (commentId) => {
+    const commentToEdit = comments.find((comment) => comment.id === commentId);
+
+    if (commentToEdit) {
+      setModalContent(
+        <EditCommentModal
+          commentId={commentId}
+          initialComment={commentToEdit.comment}
+          closeModal={() => setModalContent(null)}
+        />
+      );
+    }
+  };
 
   return (
     <div>
@@ -72,10 +95,43 @@ const PostDetails = () => {
             <h3>Comments</h3>
             <ul>
               {comments.map((comment) => (
-                <li key={comment.id}>{comment.comment}</li>
+                <li key={comment.id}>
+                  <span className="commenter-username">
+                    {comment.username ? `${comment.username}: ` : ""}
+                  </span>
+                  {comment.comment}
+                  {isUserLoggedIn && comment.user_id === user?.id && (
+                    <button onClick={() => handleCommentEdit(comment.id)}>
+                      Edit
+                    </button>
+                  )}
+                </li>
               ))}
             </ul>
           </div>
+
+          {isUserLoggedIn && (
+            <div>
+              <input
+                type="text"
+                placeholder="Enter your comment"
+                value={commentText}
+                onChange={(e) => {
+                  setCommentText(e.target.value);
+                  setCommentLength(e.target.value.length);
+                }}
+              />
+              <p>
+                Characters remaining: {maxCommentLength - commentLength}
+                {commentLength > maxCommentLength && (
+                  <span style={{ color: "red" }}>
+                    &nbsp;Character limit exceeded
+                  </span>
+                )}
+              </p>
+              <button onClick={handleCommentSubmit}>Submit Comment</button>
+            </div>
+          )}
         </div>
       ) : (
         <p>Loading...</p>

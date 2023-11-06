@@ -8,6 +8,7 @@ from app.forms.createpost_form import CreatePost
 from app.forms.editpost_form import EditPost
 from flask import current_app
 from botocore.exceptions import ClientError
+from sqlalchemy.orm import subqueryload
 
 
 posts = Blueprint('posts', __name__)
@@ -186,7 +187,9 @@ def get_posts_by_user(user_id):
 @posts.route('/<int:post_id>/comments', methods=['GET'])
 def get_comments_by_post_id(post_id):
     try:
-        comments = Comment.query.filter_by(post_id=post_id).all()
+        comments = Comment.query.filter_by(post_id=post_id).options(
+            subqueryload(Comment.user)
+        ).all()
 
         comments_data = []
         for comment in comments:
@@ -196,6 +199,7 @@ def get_comments_by_post_id(post_id):
                 'post_id': comment.post_id,
                 'comment': comment.comment,
                 'url': comment.url,
+                'username': comment.user.username,
             })
 
         return jsonify(comments_data), 200
