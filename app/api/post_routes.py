@@ -156,3 +156,28 @@ def edit_post(post_id):
             return jsonify({'error': str(e)}), 500
     else:
         return jsonify({'error': 'Invalid form data', 'form_errors': form.errors}), 400
+
+
+@posts.route('/user/<int:user_id>', methods=['GET'])
+@login_required
+def get_posts_by_user(user_id):
+    if user_id != current_user.id:
+        return jsonify({'error': 'You are not authorized to view this user\'s posts'}), 403
+
+    user_posts = Post.query.filter_by(user_id=current_user.id).all()
+
+    posts_list = []
+    for post in user_posts:
+        image_urls = [image.url for image in post.images]
+        post_dict = {
+            'id': post.id,
+            'user_id': post.user_id,
+            'title': post.title,
+            'description': post.description,
+            'hidden': post.hidden,
+            'views': post.views,
+            'image_urls': image_urls,
+        }
+        posts_list.append(post_dict)
+
+    return jsonify(posts_list)

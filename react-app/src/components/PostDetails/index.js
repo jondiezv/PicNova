@@ -9,6 +9,7 @@ const PostDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const currentPost = useSelector((state) => state.posts.currentPost);
+  const user = useSelector((state) => state.session.user);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { closeModal, setModalContent } = useModal();
   const history = useHistory();
@@ -30,11 +31,8 @@ const PostDetails = () => {
     setModalContent(null);
   };
 
-  const handlePostDeletion = () => {
-    setTimeout(() => {
-      history.push("/");
-    }, 1000);
-  };
+  const isUserLoggedIn = !!user;
+  const isCurrentUserPost = isUserLoggedIn && currentPost?.user_id === user?.id;
 
   return (
     <div>
@@ -47,14 +45,17 @@ const PostDetails = () => {
               <img key={imageUrl} src={imageUrl} alt="Post Image" />
             ))}
           </div>
-          <button onClick={handleDeleteClick}>Delete Post</button>
-          <button onClick={handleEditClick}>Edit</button>{" "}
+          {isCurrentUserPost && isUserLoggedIn && (
+            <>
+              <button onClick={handleDeleteClick}>Delete Post</button>
+              <button onClick={handleEditClick}>Edit</button>{" "}
+            </>
+          )}
           {showDeleteModal && (
             <DeletePostModal
               postId={currentPost.id}
               closeModal={() => {
                 handleCancelClick();
-                handlePostDeletion();
               }}
             />
           )}
