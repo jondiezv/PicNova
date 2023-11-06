@@ -181,3 +181,24 @@ def get_posts_by_user(user_id):
         posts_list.append(post_dict)
 
     return jsonify(posts_list)
+
+
+@posts.route('/<int:post_id>/comments', methods=['GET'])
+def get_comments_by_post_id(post_id):
+    try:
+        comments = Comment.query.filter_by(post_id=post_id).all()
+
+        comments_data = []
+        for comment in comments:
+            comments_data.append({
+                'id': comment.id,
+                'user_id': comment.user_id,
+                'post_id': comment.post_id,
+                'comment': comment.comment,
+                'url': comment.url,
+            })
+
+        return jsonify(comments_data), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
