@@ -8,6 +8,7 @@ from app.forms.createpost_form import CreatePost
 from app.forms.editpost_form import EditPost
 from flask import current_app
 from botocore.exceptions import ClientError
+from sqlalchemy.orm import subqueryload
 
 
 posts = Blueprint('posts', __name__)
@@ -156,3 +157,52 @@ def edit_post(post_id):
             return jsonify({'error': str(e)}), 500
     else:
         return jsonify({'error': 'Invalid form data', 'form_errors': form.errors}), 400
+
+
+@posts.route('/user/<int:user_id>', methods=['GET'])
+@login_required
+def get_posts_by_user(user_id):
+    if user_id != current_user.id:
+        return jsonify({'error': 'You are not authorized to view this user\'s posts'}), 403
+
+    user_posts = Post.query.filter_by(user_id=current_user.id).all()
+
+    posts_list = []
+    for post in user_posts:
+        image_urls = [image.url for image in post.images]
+        post_dict = {
+            'id': post.id,
+            'user_id': post.user_id,
+            'title': post.title,
+            'description': post.description,
+            'hidden': post.hidden,
+            'views': post.views,
+            'image_urls': image_urls,
+        }
+        posts_list.append(post_dict)
+
+    return jsonify(posts_list)
+
+
+@posts.route('/<int:post_id>/comments', methods=['GET'])
+def get_comments_by_post_id(post_id):
+    try:
+        comments = Comment.query.filter_by(post_id=post_id).options(
+            subqueryload(Comment.user)
+        ).all()
+
+        comments_data = []
+        for comment in comments:
+            comments_data.append({
+                'id': comment.id,
+                'user_id': comment.user_id,
+                'post_id': comment.post_id,
+                'comment': comment.comment,
+                'url': comment.url,
+                'username': comment.user.username,
+            })
+
+        return jsonify(comments_data), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

@@ -3,6 +3,7 @@ const GET_POST_BY_ID = "posts/GET_POST_BY_ID";
 const CREATE_POST = "posts/CREATE_POST";
 const DELETE_POST = "posts/DELETE_POST";
 const EDIT_POST = "posts/EDIT_POST";
+const GET_USER_POSTS = "posts/GET_USER_POSTS";
 
 const getAllPostsAction = (posts) => ({
   type: GET_ALL_POSTS,
@@ -26,6 +27,11 @@ const deletePostAction = () => ({
 const editPostAction = (post) => ({
   type: EDIT_POST,
   payload: post,
+});
+
+const getUserPostsAction = (posts) => ({
+  type: GET_USER_POSTS,
+  payload: posts,
 });
 
 export const getAllPosts = () => async (dispatch) => {
@@ -97,11 +103,23 @@ export const editPost = (postId, formData) => async (dispatch) => {
   }
 };
 
+export const getUserPosts = (user) => async (dispatch) => {
+  try {
+    const response = await fetch(`/api/posts/user/${user.id}`);
+    if (!response.ok) throw response;
+    const data = await response.json();
+    dispatch(getUserPostsAction(data));
+  } catch (error) {
+    console.error("Error getting user-specific posts:", error);
+  }
+};
+
 const initialState = {
   allPosts: [],
   currentPost: null,
   createdPost: null,
   deletedPost: null,
+  userPosts: [],
 };
 
 const postsReducer = (state = initialState, action) => {
@@ -128,6 +146,11 @@ const postsReducer = (state = initialState, action) => {
           post.id === action.payload.id ? action.payload : post
         ),
         currentPost: action.payload,
+      };
+    case GET_USER_POSTS:
+      return {
+        ...state,
+        userPosts: action.payload,
       };
     default:
       return state;
