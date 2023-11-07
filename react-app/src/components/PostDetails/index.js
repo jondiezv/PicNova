@@ -6,9 +6,9 @@ import { getCommentsByPostId, createComment } from "../../store/comments";
 import DeletePostModal from "../DeletePostModal";
 import { useModal } from "../../context/Modal";
 import EditCommentModal from "../EditCommentModal";
+import DeleteCommentModal from "../DeleteCommentModal";
 
-const maxCommentLength = 80;
-
+const maxCommentLength = 200;
 const PostDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -21,6 +21,8 @@ const PostDetails = () => {
 
   const [commentText, setCommentText] = useState("");
   const [commentLength, setCommentLength] = useState(0);
+  const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(false);
+  const [commentToDeleteId, setCommentToDeleteId] = useState(null);
 
   useEffect(() => {
     dispatch(getPostById(id));
@@ -43,12 +45,20 @@ const PostDetails = () => {
   const isUserLoggedIn = !!user;
   const isCurrentUserPost = isUserLoggedIn && currentPost?.user_id === user?.id;
 
-  const handleCommentSubmit = () => {
+  const handleCommentSubmit = async () => {
     if (commentText.trim() !== "" && commentText.length <= maxCommentLength) {
-      dispatch(createComment(id, commentText));
-      setCommentText("");
-      setCommentLength(0);
+      const newComment = await dispatch(createComment(id, commentText));
+      if (newComment) {
+        setCommentText("");
+        setCommentLength(0);
+        dispatch(getCommentsByPostId(id));
+      }
     }
+  };
+
+  const handleDeleteCommentClick = (commentId) => {
+    setCommentToDeleteId(commentId);
+    setShowDeleteCommentModal(true);
   };
 
   const handleCommentEdit = (commentId) => {
@@ -57,9 +67,14 @@ const PostDetails = () => {
     if (commentToEdit) {
       setModalContent(
         <EditCommentModal
+          postId={id}
           commentId={commentId}
           initialComment={commentToEdit.comment}
           closeModal={() => setModalContent(null)}
+          onSuccessEdit={() => {
+            closeModal();
+            dispatch(getCommentsByPostId(id));
+          }}
         />
       );
     }
@@ -90,7 +105,6 @@ const PostDetails = () => {
               }}
             />
           )}
-
           <div>
             <h3>Comments</h3>
             <ul>
@@ -101,15 +115,21 @@ const PostDetails = () => {
                   </span>
                   {comment.comment}
                   {isUserLoggedIn && comment.user_id === user?.id && (
-                    <button onClick={() => handleCommentEdit(comment.id)}>
-                      Edit
-                    </button>
+                    <>
+                      <button onClick={() => handleCommentEdit(comment.id)}>
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteCommentClick(comment.id)}
+                      >
+                        Delete
+                      </button>{" "}
+                    </>
                   )}
                 </li>
               ))}
             </ul>
           </div>
-
           {isUserLoggedIn && (
             <div>
               <input
@@ -125,7 +145,8 @@ const PostDetails = () => {
                 Characters remaining: {maxCommentLength - commentLength}
                 {commentLength > maxCommentLength && (
                   <span style={{ color: "red" }}>
-                    &nbsp;Character limit exceeded
+                    &nbsp;Too many characters! You won't be able to submit this
+                    comment
                   </span>
                 )}
               </p>
@@ -135,6 +156,20 @@ const PostDetails = () => {
         </div>
       ) : (
         <p>Loading...</p>
+      )}
+
+      {showDeleteCommentModal && (
+        <DeleteCommentModal
+          commentId={commentToDeleteId}
+          closeModal={() => {
+            setShowDeleteCommentModal(false);
+            setCommentToDeleteId(null);
+          }}
+          onSuccessDelete={() => {
+            console.log("Delete comment successful. Refreshing comments...");
+            dispatch(getCommentsByPostId(id));
+          }}
+        />
       )}
     </div>
   );

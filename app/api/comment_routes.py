@@ -58,3 +58,25 @@ def edit_comment(comment_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
+
+@comments.route('/delete/<int:comment_id>', methods=['DELETE'])
+@login_required
+def delete_comment(comment_id):
+    try:
+        comment = Comment.query.get(comment_id)
+
+        if not comment:
+            return jsonify({"error": "Comment not found"}), 404
+
+        if comment.user_id != current_user.id:
+            return jsonify({"error": "You are not allowed to delete this comment"}), 403
+
+        db.session.delete(comment)
+        db.session.commit()
+
+        return jsonify({"message": "Comment deleted successfully"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500

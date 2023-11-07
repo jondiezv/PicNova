@@ -1,20 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { editComment } from "../../store/comments";
-// import "./EditCommentModal.css";
 
-function EditCommentModal({ commentId, initialComment, closeModal }) {
+function EditCommentModal({
+  postId,
+  commentId,
+  initialComment,
+  closeModal,
+  onSuccessEdit,
+}) {
   const dispatch = useDispatch();
   const [editedComment, setEditedComment] = useState(initialComment);
   const [isEditing, setIsEditing] = useState(false);
 
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   const handleEdit = async () => {
     setIsEditing(true);
-
-    await dispatch(editComment(commentId, editedComment));
-
-    setIsEditing(false);
-    closeModal();
+    try {
+      console.log("Before calling editComment action");
+      const result = await dispatch(editComment(commentId, editedComment));
+      if (result && isMounted.current) {
+        console.log("Edit successful. Calling onSuccessEdit.");
+        onSuccessEdit(result);
+      }
+    } catch (error) {
+      if (isMounted.current) {
+        console.error("Failed to edit comment:", error);
+      }
+    } finally {
+      if (isMounted.current) {
+        setIsEditing(false);
+        closeModal();
+      }
+    }
   };
 
   const handleCancelClick = () => {
