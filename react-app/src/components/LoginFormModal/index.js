@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { login } from "../../store/session";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { login } from "../../store/session";
 import { useModal } from "../../context/Modal";
 import "./LoginForm.css";
 
@@ -9,17 +9,31 @@ function LoginFormModal() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
+  const [isDemoCredentialsSet, setIsDemoCredentialsSet] = useState(false);
   const { closeModal } = useModal();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e?.preventDefault();
     const data = await dispatch(login(email, password));
     if (data) {
       setErrors(data);
     } else {
-        closeModal()
+      closeModal();
     }
   };
+
+  const logInAsDemoUser = async () => {
+    setEmail("demo@aa.io");
+    setPassword("password");
+    setIsDemoCredentialsSet(true);
+  };
+
+  useEffect(() => {
+    if (isDemoCredentialsSet) {
+      handleSubmit();
+      setIsDemoCredentialsSet(false);
+    }
+  }, [isDemoCredentialsSet]);
 
   return (
     <>
@@ -49,6 +63,9 @@ function LoginFormModal() {
           />
         </label>
         <button type="submit">Log In</button>
+        <button type="button" onClick={logInAsDemoUser}>
+          Log in as Demo User
+        </button>
       </form>
     </>
   );
