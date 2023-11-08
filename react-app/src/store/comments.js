@@ -2,6 +2,7 @@ const GET_COMMENTS_BY_POST_ID = "comments/GET_COMMENTS_BY_POST_ID";
 const CREATE_COMMENT = "comments/CREATE_COMMENT";
 const EDIT_COMMENT = "comments/EDIT_COMMENT";
 const DELETE_COMMENT = "comments/DELETE_COMMENT";
+const GET_ALL_COMMENTS = "comments/GET_ALL_COMMENTS";
 
 const getCommentsByPostIdAction = (comments) => ({
   type: GET_COMMENTS_BY_POST_ID,
@@ -21,6 +22,11 @@ const editCommentAction = (comment) => ({
 const deleteCommentAction = (commentId) => ({
   type: DELETE_COMMENT,
   payload: commentId,
+});
+
+const getAllCommentsAction = (comments) => ({
+  type: GET_ALL_COMMENTS,
+  payload: comments,
 });
 
 export const getCommentsByPostId = (postId) => async (dispatch) => {
@@ -90,8 +96,20 @@ export const deleteComment = (commentId) => async (dispatch) => {
   }
 };
 
+export const getAllComments = () => async (dispatch) => {
+  try {
+    const response = await fetch(`/api/comments/all`);
+    if (!response.ok) throw response;
+    const data = await response.json();
+    dispatch(getAllCommentsAction(data));
+  } catch (error) {
+    console.error("Error getting all comments:", error);
+  }
+};
+
 const initialState = {
   commentsByPostId: [],
+  allComments: [],
 };
 
 const commentsReducer = (state = initialState, action) => {
@@ -119,6 +137,11 @@ const commentsReducer = (state = initialState, action) => {
         commentsByPostId: state.commentsByPostId.filter(
           (comment) => comment.id !== action.payload
         ),
+      };
+    case GET_ALL_COMMENTS:
+      return {
+        ...state,
+        allComments: action.payload,
       };
     default:
       return state;

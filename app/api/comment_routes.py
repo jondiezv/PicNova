@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, session, request
 from app.models import Post, User, Comment, Like, Tag, Favorite, Image, db
 from flask_login import current_user, login_user, logout_user, login_required
+from sqlalchemy.orm import subqueryload
 
 
 
@@ -79,4 +80,30 @@ def delete_comment(comment_id):
 
     except Exception as e:
         db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+@comments.route('/all', methods=['GET'])
+def get_all_comments():
+    try:
+        comments = Comment.query.options(
+            subqueryload(Comment.user)
+        ).all()
+
+        comments_data = []
+        for comment in comments:
+            comments_data.append({
+                'id': comment.id,
+                'user_id': comment.user_id,
+                'post_id': comment.post_id,
+                'comment': comment.comment,
+                'url': comment.url,
+                'username': comment.user.username,
+            })
+
+
+
+        return jsonify(comments_data), 200
+
+    except Exception as e:
         return jsonify({"error": str(e)}), 500
