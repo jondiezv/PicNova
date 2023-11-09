@@ -65,3 +65,13 @@
 .demo-button:hover {
   background-color: #149e5d;
 }
+
+.input-error {
+  border: 2px solid red;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}

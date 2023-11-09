@@ -25,11 +25,12 @@ const PostDetails = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { closeModal, setModalContent } = useModal();
   const history = useHistory();
-
   const [commentText, setCommentText] = useState("");
   const [commentLength, setCommentLength] = useState(0);
   const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(false);
   const [commentToDeleteId, setCommentToDeleteId] = useState(null);
+  const [isCommentPosting, setIsPostingComment] = useState(false);
+  const [commentDate, setCommentDate] = useState("Loading...");
 
   useEffect(() => {
     dispatch(getPostById(id));
@@ -54,11 +55,19 @@ const PostDetails = () => {
 
   const handleCommentSubmit = async () => {
     if (commentText.trim() !== "" && commentText.length <= maxCommentLength) {
-      const newComment = await dispatch(createComment(id, commentText));
-      if (newComment) {
-        setCommentText("");
-        setCommentLength(0);
-        dispatch(getCommentsByPostId(id));
+      setIsPostingComment(true);
+      setCommentDate("Posting comment...");
+      try {
+        const newComment = await dispatch(createComment(id, commentText));
+        if (newComment) {
+          setCommentText("");
+          setCommentLength(0);
+          dispatch(getCommentsByPostId(id));
+        }
+      } catch (error) {
+        console.error("Failed to post comment:", error);
+      } finally {
+        setIsPostingComment(false);
       }
     }
   };
@@ -90,11 +99,11 @@ const PostDetails = () => {
   return (
     <div className="post-details-container">
       {currentPost ? (
-        <div>
+        <>
           <span className="post-details-username">
             Posted by {currentPost.username} at{" "}
             {formatDate(currentPost.created_at)}
-          </span>{" "}
+          </span>
           <h2 className="post-details-title">{currentPost.title}</h2>
           <p className="post-details-description">{currentPost.description}</p>
           <div className="post-details-image-container">
@@ -102,7 +111,7 @@ const PostDetails = () => {
               <img key={imageUrl} src={imageUrl} alt="Post" />
             ))}
           </div>
-          {isCurrentUserPost && isUserLoggedIn && (
+          {isCurrentUserPost && (
             <>
               <button
                 className="post-details-delete-btn"
@@ -121,9 +130,7 @@ const PostDetails = () => {
           {showDeleteModal && (
             <DeletePostModal
               postId={currentPost.id}
-              closeModal={() => {
-                handleCancelClick();
-              }}
+              closeModal={handleCancelClick}
             />
           )}
           <div className="post-details-comments-container">
@@ -133,12 +140,14 @@ const PostDetails = () => {
                 <div key={comment.id} className="post-details-comment-item">
                   <span className="post-details-comment-username">
                     {comment.username ? ` ${comment.username} ` : ""}•{" "}
-                    {formatDate(comment.created_at)}
+                    {comment.created_at
+                      ? formatDate(comment.created_at)
+                      : "Posting..."}
                   </span>
                   <span className="post-details-comment-text">
                     {comment.comment}
                   </span>
-                  {isUserLoggedIn && comment.user_id === user?.id && (
+                  {user?.id === comment.user_id && (
                     <div className="post-details-comment-actions">
                       <button
                         className="post-details-comment-edit-btn"
@@ -156,6 +165,11 @@ const PostDetails = () => {
                   )}
                 </div>
               ))}
+              {isCommentPosting && (
+                <div className="post-details-comment-item">
+                  Posting comment...
+                </div>
+              )}
             </div>
           </div>
           {isUserLoggedIn && (
@@ -173,33 +187,29 @@ const PostDetails = () => {
                 Characters remaining: {maxCommentLength - commentLength}
                 {commentLength > maxCommentLength && (
                   <span className="comment-char-overlimit">
-                    &nbsp;Too many characters! You won't be able to submit this
-                    comment
+                    Too many characters! You won't be able to submit this
+                    comment.
                   </span>
                 )}
               </p>
               <button
                 className="comment-submit-btn"
                 onClick={handleCommentSubmit}
+                disabled={commentLength > maxCommentLength || isCommentPosting}
               >
                 Submit Comment
               </button>
             </div>
           )}
-        </div>
+        </>
       ) : (
         <p>Loading...</p>
       )}
       {showDeleteCommentModal && (
         <DeleteCommentModal
           commentId={commentToDeleteId}
-          closeModal={() => {
-            setShowDeleteCommentModal(false);
-            setCommentToDeleteId(null);
-          }}
-          onSuccessDelete={() => {
-            dispatch(getCommentsByPostId(id));
-          }}
+          closeModal={() => setShowDeleteCommentModal(false)}
+          onSuccessDelete={() => dispatch(getCommentsByPostId(id))}
         />
       )}
     </div>

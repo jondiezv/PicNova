@@ -14,6 +14,7 @@ const Upload = () => {
     image: null,
     hidden: false,
   });
+  const [filename, setFilename] = useState("");
 
   useEffect(() => {
     return () => {
@@ -28,6 +29,7 @@ const Upload = () => {
         ...formData,
         [name]: files[0],
       });
+      setFilename(files[0] ? files[0].name : "");
     } else if (type === "checkbox") {
       setFormData({
         ...formData,
@@ -93,7 +95,7 @@ const Upload = () => {
             style={{ display: "none" }}
           />
           <label htmlFor="file-input" style={{ cursor: "pointer" }}>
-            <div>Select image to upload</div>
+            <div>{filename || "Select image to upload"}</div>
           </label>
         </div>
         <div>
