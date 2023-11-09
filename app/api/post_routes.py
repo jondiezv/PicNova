@@ -15,12 +15,10 @@ posts = Blueprint('posts', __name__)
 
 @posts.route('/', methods=['GET'])
 def get_all_posts():
-
-    posts = Post.query.all()
+    posts = Post.query.filter_by(hidden=False).all()
 
     posts_list = []
     for post in posts:
-
         image_urls = [image.url for image in post.images]
 
         post_dict = {
@@ -40,24 +38,26 @@ def get_all_posts():
 
 @posts.route('/<int:post_id>', methods=['GET'])
 def get_post_by_id(post_id):
+    post = Post.query.get(post_id)
+    if post is None:
+        return jsonify({'error': 'Post not found'}), 404
 
-        post = Post.query.get(post_id)
-        if post is None:
-            return jsonify({'error': 'Post not found'}), 404
+    image_urls = [image.url for image in post.images]
+    username = post.user.username if post.user else None
 
-        image_urls = [image.url for image in post.images]
+    post_dict = {
+        'id': post.id,
+        'user_id': post.user_id,
+        'username': username,
+        'title': post.title,
+        'description': post.description,
+        'hidden': post.hidden,
+        'views': post.views,
+        'image_urls': image_urls,
+    }
 
-        post_dict = {
-            'id': post.id,
-            'user_id': post.user_id,
-            'title': post.title,
-            'description': post.description,
-            'hidden': post.hidden,
-            'views': post.views,
-            'image_urls': image_urls,
-        }
+    return jsonify(post_dict)
 
-        return jsonify(post_dict)
 
 
 @posts.route('/create', methods=['POST'])

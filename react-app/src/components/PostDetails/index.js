@@ -7,6 +7,7 @@ import DeletePostModal from "../DeletePostModal";
 import { useModal } from "../../context/Modal";
 import EditCommentModal from "../EditCommentModal";
 import DeleteCommentModal from "../DeleteCommentModal";
+import "./PostDetails.css";
 
 const maxCommentLength = 200;
 const PostDetails = () => {
@@ -81,20 +82,33 @@ const PostDetails = () => {
   };
 
   return (
-    <div>
+    <div className="post-details-container">
       {currentPost ? (
         <div>
-          <h2>{currentPost.title}</h2>
-          <p>{currentPost.description}</p>
-          <div>
+          <span className="post-details-username">
+            Posted by {currentPost.username}
+          </span>{" "}
+          <h2 className="post-details-title">{currentPost.title}</h2>
+          <p className="post-details-description">{currentPost.description}</p>
+          <div className="post-details-image-container">
             {currentPost.image_urls?.map((imageUrl) => (
-              <img key={imageUrl} src={imageUrl} alt="Post Image" />
+              <img key={imageUrl} src={imageUrl} alt="Post" />
             ))}
           </div>
           {isCurrentUserPost && isUserLoggedIn && (
             <>
-              <button onClick={handleDeleteClick}>Delete Post</button>
-              <button onClick={handleEditClick}>Edit</button>{" "}
+              <button
+                className="post-details-delete-btn"
+                onClick={handleDeleteClick}
+              >
+                Delete Post
+              </button>
+              <button
+                className="post-details-edit-btn"
+                onClick={handleEditClick}
+              >
+                Edit Post
+              </button>
             </>
           )}
           {showDeleteModal && (
@@ -105,35 +119,41 @@ const PostDetails = () => {
               }}
             />
           )}
-          <div>
-            <h3>Comments</h3>
-            <ul>
+          <div className="post-details-comments-container">
+            <h3 className="post-details-comments-title">Comments</h3>
+            <div className="post-details-comments-list">
               {comments.map((comment) => (
-                <li key={comment.id}>
-                  <span className="commenter-username">
+                <div key={comment.id} className="post-details-comment-item">
+                  <span className="post-details-comment-username">
                     {comment.username ? `${comment.username}: ` : ""}
                   </span>
-                  {comment.comment}
+                  <span className="post-details-comment-text">
+                    {comment.comment}
+                  </span>
                   {isUserLoggedIn && comment.user_id === user?.id && (
-                    <>
-                      <button onClick={() => handleCommentEdit(comment.id)}>
+                    <div className="post-details-comment-actions">
+                      <button
+                        className="post-details-comment-edit-btn"
+                        onClick={() => handleCommentEdit(comment.id)}
+                      >
                         Edit
                       </button>
                       <button
+                        className="post-details-comment-delete-btn"
                         onClick={() => handleDeleteCommentClick(comment.id)}
                       >
                         Delete
-                      </button>{" "}
-                    </>
+                      </button>
+                    </div>
                   )}
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
           {isUserLoggedIn && (
-            <div>
-              <input
-                type="text"
+            <div className="comment-form">
+              <textarea
+                className="comment-textarea"
                 placeholder="Enter your comment"
                 value={commentText}
                 onChange={(e) => {
@@ -141,23 +161,27 @@ const PostDetails = () => {
                   setCommentLength(e.target.value.length);
                 }}
               />
-              <p>
+              <p className="comment-char-count">
                 Characters remaining: {maxCommentLength - commentLength}
                 {commentLength > maxCommentLength && (
-                  <span style={{ color: "red" }}>
+                  <span className="comment-char-overlimit">
                     &nbsp;Too many characters! You won't be able to submit this
                     comment
                   </span>
                 )}
               </p>
-              <button onClick={handleCommentSubmit}>Submit Comment</button>
+              <button
+                className="comment-submit-btn"
+                onClick={handleCommentSubmit}
+              >
+                Submit Comment
+              </button>
             </div>
           )}
         </div>
       ) : (
         <p>Loading...</p>
       )}
-
       {showDeleteCommentModal && (
         <DeleteCommentModal
           commentId={commentToDeleteId}
@@ -166,7 +190,6 @@ const PostDetails = () => {
             setCommentToDeleteId(null);
           }}
           onSuccessDelete={() => {
-            console.log("Delete comment successful. Refreshing comments...");
             dispatch(getCommentsByPostId(id));
           }}
         />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { getPostById, editPost } from "../../store/posts";
+import "./EditPost.css";
 
 const EditPost = (props) => {
   const postId = props.match.params.id;
@@ -61,9 +62,9 @@ const EditPost = (props) => {
     }
   };
   return (
-    <div>
-      <h2>Edit Post</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="edit-post-container">
+      <h2 className="edit-post-title">Edit Post</h2>
+      <form className="edit-post-form" onSubmit={handleSubmit}>
         <div>
           <label>Title:</label>
           <input
@@ -95,7 +96,9 @@ const EditPost = (props) => {
           </label>
         </div>
         <div>
-          <button type="submit">Save Changes</button>
+          <button type="submit" className="upload-btn">
+            Save Changes
+          </button>
         </div>
       </form>
     </div>
