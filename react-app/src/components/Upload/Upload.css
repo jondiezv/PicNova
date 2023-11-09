@@ -1,0 +1,60 @@
+.upload-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.upload-form {
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(to right, rgba(246, 3, 226, 0.183), #06f6e652);
+  max-width: 500px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.drop-zone {
+  border: 2px dashed #ffffff;
+  border-radius: 10px;
+  text-align: center;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+textarea {
+  width: 90%;
+  margin: 10px auto;
+  display: block;
+}
+input[type="file"] {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.upload-btn {
+  background-color: #1be1ef;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #458ba0;
+}

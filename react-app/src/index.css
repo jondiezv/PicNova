@@ -1,1 +1,4 @@
-/* TODO Add site wide styles */
+body {
+  font-family: "Arial", sans-serif;
+  background: rgb(244, 244, 244);
+}

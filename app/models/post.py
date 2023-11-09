@@ -1,3 +1,4 @@
+from datetime import datetime
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 
 class Post(db.Model):
@@ -13,11 +14,11 @@ class Post(db.Model):
     description = db.Column(db.Text, nullable=True)
     hidden = db.Column(db.Boolean, default=False, nullable=False)
     views = db.Column(db.Integer, default=0, nullable=False)
-
-
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     user = db.relationship('User', back_populates='posts')
-    comments = db.relationship('Comment', back_populates='post')
+    comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
     likes = db.relationship('Like', back_populates='post')
     favorites = db.relationship('Favorite', back_populates='post')
     images = db.relationship('Image', back_populates='post', cascade='all, delete-orphan')

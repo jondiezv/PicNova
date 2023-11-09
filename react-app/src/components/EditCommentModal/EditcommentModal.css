@@ -1,0 +1,68 @@
+.edit-comment-modal {
+  background-color: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.edit-comment-modal h3 {
+  font-size: 1.2rem;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.modal-buttons {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.edit-comment-txt {
+  width: 20%;
+  height: 100px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  font-size: 1rem;
+}
+
+.save,
+.cancel {
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  outline: none;
+}
+
+.save {
+  background-color: #d9534f;
+  color: #fff;
+}
+
+.cancel {
+  background-color: #5bc0de;
+  color: #fff;
+}
+
+.save:hover,
+.cancel:hover {
+  opacity: 0.8;
+}
+
+.validation-error {
+  color: #d9534f;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
