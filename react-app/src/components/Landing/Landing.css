@@ -1,0 +1,51 @@
+ul {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 2em;
+  list-style: none;
+  padding: 20px;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.card {
+  background: rgb(132, 201, 224);
+  margin-bottom: 1em;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+  width: 100%;
+  display: block;
+}
+
+.card h3,
+.card p {
+  padding: 0 10px;
+}
+
+.card h3 {
+  font-size: 1em;
+  color: #333;
+  margin: 10px 0 0;
+}
+
+.card p {
+  color: #777;
+  margin: 5px 0 10px;
+}
+
+.card a {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}

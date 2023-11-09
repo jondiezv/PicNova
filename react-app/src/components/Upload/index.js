@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { createPost } from "../../store/posts";
 import { useHistory } from "react-router-dom";
+import "./Upload.css";
 
 const Upload = () => {
   const dispatch = useDispatch();
@@ -74,9 +75,27 @@ const Upload = () => {
   };
 
   return (
-    <div>
-      <h2>Upload a New Post</h2>
-      <form encType="multipart/form-data" onSubmit={handleSubmit}>
+    <div className="upload-container">
+      <form
+        className="upload-form"
+        encType="multipart/form-data"
+        onSubmit={handleSubmit}
+      >
+        <h2>Upload a New Post</h2>
+        <div className="drop-zone">
+          <input
+            id="file-input"
+            type="file"
+            name="image"
+            accept="image/*"
+            onChange={handleChange}
+            required
+            style={{ display: "none" }}
+          />
+          <label htmlFor="file-input" style={{ cursor: "pointer" }}>
+            <div>Select image to upload</div>
+          </label>
+        </div>
         <div>
           <label>Title:</label>
           <input
@@ -97,16 +116,6 @@ const Upload = () => {
           />
         </div>
         <div>
-          <label>Image:</label>
-          <input
-            type="file"
-            name="image"
-            accept="image/*"
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
           <label>
             Hidden:
             <input
@@ -118,7 +127,9 @@ const Upload = () => {
           </label>
         </div>
         <div>
-          <button type="submit">Upload</button>
+          <button type="submit" className="upload-btn">
+            Upload
+          </button>
         </div>
       </form>
     </div>

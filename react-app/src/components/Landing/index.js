@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAllPosts } from "../../store/posts";
 import { getAllComments } from "../../store/comments";
+import "./Landing.css";
 
 const LandingPage = () => {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ const LandingPage = () => {
         <h2>Most Recent</h2>
         <ul>
           {posts.map((post) => (
-            <li key={post.id}>
+            <li key={post.id} className="card">
               <Link to={`/post/${post.id}`}>
                 {post.image_urls.length > 0 && (
                   <img src={post.image_urls[0]} alt="Post Image" />

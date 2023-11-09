@@ -19,9 +19,11 @@ function Navigation({ isLoaded }) {
       </li>
       {isLoaded && sessionUser && (
         <li className="nav-item">
-          <NavLink to="/upload" className="nav-link">
-            New Post
-          </NavLink>
+          <button className="nav-upload">
+            <NavLink to="/upload" className="nav-link">
+              New Post
+            </NavLink>
+          </button>
         </li>
       )}
       {isLoaded && (

@@ -57,3 +57,18 @@ ul.navbar a {
   width: 150px;
   height: auto;
 }
+
+.nav-upload {
+  background-color: rgb(112, 159, 155);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out;
+  margin-right: 1500px;
+}
+
+.nav-upload:hover {
+  background-color: #149e5d;
+}
