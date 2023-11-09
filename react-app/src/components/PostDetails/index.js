@@ -10,6 +10,12 @@ import DeleteCommentModal from "../DeleteCommentModal";
 import "./PostDetails.css";
 
 const maxCommentLength = 200;
+
+const formatDate = (dateString) => {
+  const options = { year: "numeric", month: "numeric", day: "numeric" };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
 const PostDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -86,7 +92,8 @@ const PostDetails = () => {
       {currentPost ? (
         <div>
           <span className="post-details-username">
-            Posted by {currentPost.username}
+            Posted by {currentPost.username} at{" "}
+            {formatDate(currentPost.created_at)}
           </span>{" "}
           <h2 className="post-details-title">{currentPost.title}</h2>
           <p className="post-details-description">{currentPost.description}</p>
@@ -125,7 +132,8 @@ const PostDetails = () => {
               {comments.map((comment) => (
                 <div key={comment.id} className="post-details-comment-item">
                   <span className="post-details-comment-username">
-                    {comment.username ? `${comment.username}: ` : ""}
+                    {comment.username ? ` ${comment.username} ` : ""}•{" "}
+                    {formatDate(comment.created_at)}
                   </span>
                   <span className="post-details-comment-text">
                     {comment.comment}

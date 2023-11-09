@@ -53,6 +53,8 @@ def get_post_by_id(post_id):
         'description': post.description,
         'hidden': post.hidden,
         'views': post.views,
+        'created_at': post.created_at.isoformat(),
+        'updated_at': post.updated_at.isoformat(),
         'image_urls': image_urls,
     }
 
@@ -200,6 +202,8 @@ def get_comments_by_post_id(post_id):
                 'comment': comment.comment,
                 'url': comment.url,
                 'username': comment.user.username,
+                'created_at': comment.created_at.isoformat(),
+                'updated_at': comment.updated_at.isoformat(),
             })
 
         return jsonify(comments_data), 200
