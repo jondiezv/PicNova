@@ -4,6 +4,7 @@ const CREATE_POST = "posts/CREATE_POST";
 const DELETE_POST = "posts/DELETE_POST";
 const EDIT_POST = "posts/EDIT_POST";
 const GET_USER_POSTS = "posts/GET_USER_POSTS";
+const ADD_TO_FAVORITES = "posts/ADD_TO_FAVORITES";
 
 const getAllPostsAction = (posts) => ({
   type: GET_ALL_POSTS,
@@ -32,6 +33,10 @@ const editPostAction = (post) => ({
 const getUserPostsAction = (posts) => ({
   type: GET_USER_POSTS,
   payload: posts,
+});
+
+const addToFavoritesAction = () => ({
+  type: ADD_TO_FAVORITES,
 });
 
 export const getAllPosts = () => async (dispatch) => {
@@ -114,6 +119,19 @@ export const getUserPosts = (user) => async (dispatch) => {
   }
 };
 
+export const addToFavorites = (postId) => async (dispatch) => {
+  try {
+    const response = await fetch(`/api/posts/${postId}/add_to_favorites`, {
+      method: "POST",
+    });
+    if (!response.ok) throw response;
+    dispatch(addToFavoritesAction());
+    console.log("Post added to favorites successfully");
+  } catch (error) {
+    console.error("Error adding post to favorites:", error);
+  }
+};
+
 const initialState = {
   allPosts: [],
   currentPost: null,
@@ -151,6 +169,12 @@ const postsReducer = (state = initialState, action) => {
       return {
         ...state,
         userPosts: action.payload,
+      };
+    case ADD_TO_FAVORITES:
+      const updatedUserFavorites = [...state.userFavorites, action.payload];
+      return {
+        ...state,
+        userFavorites: updatedUserFavorites,
       };
     default:
       return state;

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useHistory } from "react-router-dom";
-import { getPostById } from "../../store/posts";
+import { getPostById, addToFavorites } from "../../store/posts";
 import { getCommentsByPostId, createComment } from "../../store/comments";
 import DeletePostModal from "../DeletePostModal";
 import { useModal } from "../../context/Modal";
 import EditCommentModal from "../EditCommentModal";
 import DeleteCommentModal from "../DeleteCommentModal";
+import { FaHeart } from "react-icons/fa";
 import "./PostDetails.css";
 
 const maxCommentLength = 200;
@@ -94,6 +95,10 @@ const PostDetails = () => {
         />
       );
     }
+  };
+
+  const handleAddToFavorites = () => {
+    dispatch(addToFavorites(currentPost.id));
   };
 
   return (
@@ -201,6 +206,13 @@ const PostDetails = () => {
               </button>
             </div>
           )}
+          {/* {isUserLoggedIn && (
+            <div className="post-favorite-button">
+              <button onClick={handleAddToFavorites}>
+                <FaHeart className="heart-icon" /> Add to Favorites
+              </button>
+            </div>
+          )} */}
         </>
       ) : (
         <p>Loading...</p>

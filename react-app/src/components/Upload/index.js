@@ -16,6 +16,12 @@ const Upload = () => {
   });
   const [filename, setFilename] = useState("");
 
+  const [errors, setErrors] = useState({
+    title: "",
+    description: "",
+    image: "",
+  });
+
   useEffect(() => {
     return () => {
       setIsMounted(false);
@@ -46,33 +52,70 @@ const Upload = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formDataToSend = new FormData();
-    formDataToSend.append("title", formData.title);
-    formDataToSend.append("description", formData.description);
-    formDataToSend.append("image", formData.image);
-    formDataToSend.append("hidden", formData.hidden);
+    setErrors({
+      title: "",
+      description: "",
+      image: "",
+    });
 
-    try {
-      const actionResult = await dispatch(createPost(formDataToSend));
-      console.log("ActionResult:", actionResult);
+    let isValid = true;
+    if (!formData.title) {
+      setErrors((prevErrors) => {
+        return {
+          ...prevErrors,
+          title: "Write a title",
+        };
+      });
+      isValid = false;
+    }
+    if (!formData.description) {
+      setErrors((prevErrors) => {
+        return {
+          ...prevErrors,
+          description: "Write a description",
+        };
+      });
+      isValid = false;
+    }
+    if (!formData.image) {
+      setErrors((prevErrors) => {
+        return {
+          ...prevErrors,
+          image: "Select an image",
+        };
+      });
+      isValid = false;
+    }
 
-      const newPost = actionResult;
+    console.log("Validation complete", { isValid, errors: { ...errors } });
 
-      if (isMounted && newPost && newPost.id) {
-        history.push(`/post/${newPost.id}`);
-        setFormData({
-          title: "",
-          description: "",
-          image: null,
-          hidden: false,
-        });
-      } else if (isMounted) {
-        console.error("The post ID was not returned after creation.");
-      }
-    } catch (error) {
-      if (isMounted) {
+    if (isValid) {
+      const formDataToSend = new FormData();
+      formDataToSend.append("title", formData.title);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("image", formData.image);
+      formDataToSend.append("hidden", formData.hidden);
+
+      try {
+        const actionResult = await dispatch(createPost(formDataToSend));
+
+        const newPost = actionResult;
+
+        if (isMounted && newPost && newPost.id) {
+          history.push(`/post/${newPost.id}`);
+          setFormData({
+            title: "",
+            description: "",
+            image: null,
+            hidden: false,
+          });
+        } else if (isMounted) {
+          console.error("The post ID was not returned after creation.");
+        }
+      } catch (error) {
         console.error("Failed to create post:", error);
       }
+    } else {
     }
   };
 
@@ -84,6 +127,7 @@ const Upload = () => {
         onSubmit={handleSubmit}
       >
         <h2>Upload a New Post</h2>
+
         <div className="drop-zone">
           <input
             id="file-input"
@@ -91,13 +135,13 @@ const Upload = () => {
             name="image"
             accept="image/*"
             onChange={handleChange}
-            required
-            style={{ display: "none" }}
           />
           <label htmlFor="file-input" style={{ cursor: "pointer" }}>
             <div>{filename || "Select image to upload"}</div>
           </label>
+          {errors.image && <p className="error">{errors.image}</p>}
         </div>
+
         <div>
           <label>Title:</label>
           <input
@@ -105,18 +149,20 @@ const Upload = () => {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            required
           />
+          {errors.title && <p className="error">{errors.title}</p>}
         </div>
+
         <div>
           <label>Description:</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            required
           />
+          {errors.description && <p className="error">{errors.description}</p>}
         </div>
+
         <div>
           <label>
             Hidden:
@@ -128,6 +174,7 @@ const Upload = () => {
             />
           </label>
         </div>
+
         <div>
           <button type="submit" className="upload-btn">
             Upload

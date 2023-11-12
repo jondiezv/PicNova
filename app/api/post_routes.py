@@ -44,6 +44,8 @@ def get_post_by_id(post_id):
 
     image_urls = [image.url for image in post.images]
     username = post.user.username if post.user else None
+    likes_count = Like.query.filter_by(post_id=post.id).count()
+    favorites_count = Favorite.query.filter_by(post_id=post.id).count()
 
     post_dict = {
         'id': post.id,
@@ -56,6 +58,8 @@ def get_post_by_id(post_id):
         'created_at': post.created_at.isoformat(),
         'updated_at': post.updated_at.isoformat(),
         'image_urls': image_urls,
+        'likes_count': likes_count,
+        'favorites_count': favorites_count,
     }
 
     return jsonify(post_dict)
@@ -210,3 +214,51 @@ def get_comments_by_post_id(post_id):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@posts.route('/<int:post_id>/add_to_favorites', methods=['POST'])
+@login_required
+def add_post_to_favorites(post_id):
+    post = Post.query.get(post_id)
+    if post is None:
+        return jsonify({'error': 'Post not found'}), 404
+
+    user = current_user
+
+    existing_favorite = Favorite.query.filter_by(user_id=user.id, post_id=post.id).first()
+    if existing_favorite:
+        return jsonify({'message': 'Post already in favorites'}), 200
+
+    try:
+        new_favorite = Favorite(user=user, post=post)
+        db.session.add(new_favorite)
+        db.session.commit()
+        return jsonify({'message': 'Post added to favorites successfully'}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f'Unexpected error: {e}')
+        return jsonify({'error': str(e)}), 500
+
+
+@posts.route('/<int:post_id>/remove_from_favorites', methods=['POST'])
+@login_required
+def remove_post_from_favorites(post_id):
+    post = Post.query.get(post_id)
+    if post is None:
+        return jsonify({'error': 'Post not found'}), 404
+
+    user = current_user
+
+    favorite = Favorite.query.filter_by(user_id=user.id, post_id=post.id).first()
+    if favorite:
+        try:
+            db.session.delete(favorite)
+            db.session.commit()
+            return jsonify({'message': 'Post removed from favorites successfully'}), 200
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(f'Unexpected error: {e}')
+            return jsonify({'error': str(e)}), 500
+    else:
+        return jsonify({'message': 'Post is not in favorites'}), 200
