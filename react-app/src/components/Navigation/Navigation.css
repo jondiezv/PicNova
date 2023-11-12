@@ -11,31 +11,45 @@ ul.navbar {
   box-sizing: border-box;
   border: none;
   width: 100%;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
+  z-index: 10;
+  height: 70px;
 }
 
 ul.navbar li {
-  margin-right: 20px;
+  padding: 14px 16px;
+}
+
+.logo {
+  width: auto;
+  height: 40px;
+  margin-left: 20px;
 }
 
 ul.navbar a {
-  text-decoration: none;
+  display: block;
   color: white;
+  text-align: center;
+  text-decoration: none;
   font-weight: bold;
+}
+
+ul.navbar a:hover {
+  background-color: #149e5d;
 }
 
 .profile-dropdown {
   position: absolute;
-  top: 30px;
+  top: 100px;
   right: 20px;
+  z-index: 11;
   background-color: rgb(49, 47, 49);
-  list-style: none;
-  padding: 10px;
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  z-index: 1;
+  width: auto;
+  padding: 10px;
 }
 
 .profile-dropdown.hidden {
@@ -43,7 +57,10 @@ ul.navbar a {
 }
 
 .profile-dropdown li {
+  color: white;
+  list-style: none;
   margin: 5px 0;
+  cursor: pointer;
 }
 
 .profile-dropdown button {
@@ -51,11 +68,6 @@ ul.navbar a {
   border: none;
   color: white;
   cursor: pointer;
-}
-
-.logo {
-  width: 150px;
-  height: auto;
 }
 
 .nav-upload {
@@ -66,7 +78,10 @@ ul.navbar a {
   border-radius: 25px;
   text-decoration: none;
   transition: background-color 0.3s ease-in-out;
-  margin-right: 1500px;
+  position: absolute;
+  left: 200px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .nav-upload:hover {

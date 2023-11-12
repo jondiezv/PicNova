@@ -58,3 +58,13 @@ input[type="checkbox"] {
 button:hover {
   background-color: #458ba0;
 }
+
+.error {
+  color: red;
+  margin-top: 5px;
+}
+
+#file-input {
+  position: absolute;
+  left: -9999px;
+}
