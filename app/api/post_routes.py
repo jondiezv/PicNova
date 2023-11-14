@@ -262,3 +262,16 @@ def remove_post_from_favorites(post_id):
             return jsonify({'error': str(e)}), 500
     else:
         return jsonify({'message': 'Post is not in favorites'}), 200
+
+
+@posts.route('/user/<int:user_id>/favorites', methods=['GET'])
+@login_required
+def get_user_favorites(user_id):
+    if user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized access'}), 403
+
+    favorites = Favorite.query.filter_by(user_id=user_id).all()
+
+    favorites_list = [favorite.post_id for favorite in favorites]
+
+    return jsonify(favorites_list), 200

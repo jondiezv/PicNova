@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useHistory } from "react-router-dom";
-import { getPostById, addToFavorites } from "../../store/posts";
+import {
+  getPostById,
+  addToFavorites,
+  removeFromFavorites,
+  getUserFavorites,
+} from "../../store/posts";
 import { getCommentsByPostId, createComment } from "../../store/comments";
 import DeletePostModal from "../DeletePostModal";
 import { useModal } from "../../context/Modal";
@@ -32,11 +37,23 @@ const PostDetails = () => {
   const [commentToDeleteId, setCommentToDeleteId] = useState(null);
   const [isCommentPosting, setIsPostingComment] = useState(false);
   const [commentDate, setCommentDate] = useState("Loading...");
+  const userFavorites = useSelector((state) => state.posts.userFavorites);
 
   useEffect(() => {
     dispatch(getPostById(id));
     dispatch(getCommentsByPostId(id));
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(getUserFavorites(user.id));
+    }
+    dispatch(getPostById(id));
+    dispatch(getCommentsByPostId(id));
+  }, [dispatch, id, user?.id]);
+
+  const isPostInFavorites =
+    user?.id && currentPost && userFavorites.includes(currentPost.id);
 
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
@@ -97,8 +114,12 @@ const PostDetails = () => {
     }
   };
 
-  const handleAddToFavorites = () => {
-    dispatch(addToFavorites(currentPost.id));
+  const handleFavoritesClick = () => {
+    if (isPostInFavorites) {
+      dispatch(removeFromFavorites(currentPost.id));
+    } else {
+      dispatch(addToFavorites(currentPost.id));
+    }
   };
 
   return (
@@ -206,13 +227,21 @@ const PostDetails = () => {
               </button>
             </div>
           )}
-          {/* {isUserLoggedIn && (
+          {isUserLoggedIn && (
             <div className="post-favorite-button">
-              <button onClick={handleAddToFavorites}>
-                <FaHeart className="heart-icon" /> Add to Favorites
+              <button onClick={handleFavoritesClick}>
+                {isPostInFavorites ? (
+                  <>
+                    <FaHeart className="heart-icon" /> Remove from Favorites
+                  </>
+                ) : (
+                  <>
+                    <FaHeart className="heart-icon" /> Add to Favorites
+                  </>
+                )}
               </button>
             </div>
-          )} */}
+          )}
         </>
       ) : (
         <p>Loading...</p>
