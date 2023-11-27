@@ -8,7 +8,7 @@ class Favorite(db.Model):
         __table_args__ = {'schema': SCHEMA}
 
     user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')), primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('posts.id')), primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('posts.id'), ondelete='CASCADE'), primary_key=True)
 
     user = db.relationship('User', back_populates='favorites')
     post = db.relationship('Post', back_populates='favorites')

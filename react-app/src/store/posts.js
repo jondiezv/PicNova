@@ -5,6 +5,8 @@ const DELETE_POST = "posts/DELETE_POST";
 const EDIT_POST = "posts/EDIT_POST";
 const GET_USER_POSTS = "posts/GET_USER_POSTS";
 const ADD_TO_FAVORITES = "posts/ADD_TO_FAVORITES";
+const REMOVE_FROM_FAVORITES = "posts/REMOVE_FROM_FAVORITES";
+const GET_USER_FAVORITES = "posts/GET_USER_FAVORITES";
 
 const getAllPostsAction = (posts) => ({
   type: GET_ALL_POSTS,
@@ -35,8 +37,19 @@ const getUserPostsAction = (posts) => ({
   payload: posts,
 });
 
-const addToFavoritesAction = () => ({
+const addToFavoritesAction = (postId) => ({
   type: ADD_TO_FAVORITES,
+  payload: postId,
+});
+
+const removeFromFavoritesAction = (postId) => ({
+  type: REMOVE_FROM_FAVORITES,
+  payload: postId,
+});
+
+const getUserFavoritesAction = (favorites) => ({
+  type: GET_USER_FAVORITES,
+  payload: favorites,
 });
 
 export const getAllPosts = () => async (dispatch) => {
@@ -119,16 +132,42 @@ export const getUserPosts = (user) => async (dispatch) => {
   }
 };
 
-export const addToFavorites = (postId) => async (dispatch) => {
+export const addToFavorites = (postId) => async (dispatch, getState) => {
   try {
     const response = await fetch(`/api/posts/${postId}/add_to_favorites`, {
       method: "POST",
     });
     if (!response.ok) throw response;
-    dispatch(addToFavoritesAction());
-    console.log("Post added to favorites successfully");
+    dispatch(addToFavoritesAction(postId));
+    const userId = getState().session.user.id;
+    dispatch(getUserFavorites(userId));
   } catch (error) {
     console.error("Error adding post to favorites:", error);
+  }
+};
+
+export const removeFromFavorites = (postId) => async (dispatch, getState) => {
+  try {
+    const response = await fetch(`/api/posts/${postId}/remove_from_favorites`, {
+      method: "POST",
+    });
+    if (!response.ok) throw response;
+    dispatch(removeFromFavoritesAction(postId));
+    const userId = getState().session.user.id;
+    dispatch(getUserFavorites(userId));
+  } catch (error) {
+    console.error("Error removing post from favorites:", error);
+  }
+};
+
+export const getUserFavorites = (userId) => async (dispatch) => {
+  try {
+    const response = await fetch(`/api/posts/user/${userId}/favorites`);
+    if (!response.ok) throw response;
+    const favorites = await response.json();
+    dispatch(getUserFavoritesAction(favorites));
+  } catch (error) {
+    console.error("Error fetching user favorites:", error);
   }
 };
 
@@ -138,6 +177,7 @@ const initialState = {
   createdPost: null,
   deletedPost: null,
   userPosts: [],
+  userFavorites: [],
 };
 
 const postsReducer = (state = initialState, action) => {
@@ -170,11 +210,25 @@ const postsReducer = (state = initialState, action) => {
         ...state,
         userPosts: action.payload,
       };
-    case ADD_TO_FAVORITES:
-      const updatedUserFavorites = [...state.userFavorites, action.payload];
+    case GET_USER_FAVORITES:
       return {
         ...state,
-        userFavorites: updatedUserFavorites,
+        userFavorites: action.payload,
+      };
+    case ADD_TO_FAVORITES:
+      if (!state.userFavorites.includes(action.payload)) {
+        return {
+          ...state,
+          userFavorites: [...state.userFavorites, action.payload],
+        };
+      }
+      return state;
+    case REMOVE_FROM_FAVORITES:
+      return {
+        ...state,
+        userFavorites: state.userFavorites.filter(
+          (postId) => postId !== action.payload
+        ),
       };
     default:
       return state;
