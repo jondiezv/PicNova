@@ -87,8 +87,6 @@ const Upload = () => {
       isValid = false;
     }
 
-    console.log("Validation complete", { isValid, errors: { ...errors } });
-
     if (isValid) {
       const formDataToSend = new FormData();
       formDataToSend.append("title", formData.title);

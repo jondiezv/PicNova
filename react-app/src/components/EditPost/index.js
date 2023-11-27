@@ -47,7 +47,6 @@ const EditPost = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const actionResult = await dispatch(editPost(postId, formData));
-    console.log("ActionResult:", actionResult);
 
     if (isMounted) {
       history.push(`/post/${postId}`);
