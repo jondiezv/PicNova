@@ -32,7 +32,7 @@ function App() {
           <Route path="/upload">
             <Upload />
           </Route>
-          <Route path="/profile/:userId">
+          <Route path="/posts/:userId">
             <Profile />
           </Route>
           <Route
