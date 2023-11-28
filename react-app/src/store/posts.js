@@ -97,7 +97,6 @@ export const deletePost = (postId) => async (dispatch) => {
     });
     if (!response.ok) throw response;
     dispatch(deletePostAction());
-    console.log("Post deleted successfully");
   } catch (error) {
     console.error("Error deleting post:", error);
   }
@@ -115,7 +114,6 @@ export const editPost = (postId, formData) => async (dispatch) => {
     if (!response.ok) throw response;
     const data = await response.json();
     dispatch(editPostAction(data));
-    console.log("Post edited successfully");
   } catch (error) {
     console.error("Error editing post:", error);
   }
