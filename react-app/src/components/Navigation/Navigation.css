@@ -5,7 +5,7 @@ ul.navbar {
   padding: 5px 5px;
   list-style: none;
   margin: 0;
-  background-image: url("https://cdn.discordapp.com/attachments/1169328578379387000/1171868618099806228/banner.png");
+  background-image: url("https://cdn.discordapp.com/attachments/1169328578379387000/1179488891506532402/banner.png");
   background-size: cover;
   background-position: center;
   box-sizing: border-box;
@@ -20,6 +20,26 @@ ul.navbar {
 
 ul.navbar li {
   padding: 14px 16px;
+}
+
+button.profile-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: #558b88;
+  cursor: pointer;
+  outline: none;
+}
+
+.profile-letter {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .logo {
