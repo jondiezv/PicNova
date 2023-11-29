@@ -9,7 +9,7 @@ import LandingPage from "./components/Landing";
 import PostDetails from "./components/PostDetails";
 import Upload from "./components/Upload";
 import EditPost from "./components/EditPost";
-import Profile from "./components/Profile";
+import ProfilePosts from "./components/ProfilePosts";
 
 function App() {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ function App() {
             <Upload />
           </Route>
           <Route path="/posts/:userId">
-            <Profile />
+            <ProfilePosts />
           </Route>
           <Route
             path="/post/:id/edit"
