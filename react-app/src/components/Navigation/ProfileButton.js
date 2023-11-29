@@ -10,7 +10,7 @@ import "./Navigation.css";
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
-  const ulRef = useRef();
+  const profileMenuRef = useRef();
 
   const openMenu = () => {
     if (showMenu) return;
@@ -21,7 +21,10 @@ function ProfileButton({ user }) {
     if (!showMenu) return;
 
     const closeMenu = (e) => {
-      if (!ulRef.current.contains(e.target)) {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(e.target)
+      ) {
         setShowMenu(false);
       }
     };
@@ -36,42 +39,50 @@ function ProfileButton({ user }) {
     dispatch(logout());
   };
 
-  const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
-  const closeMenu = () => setShowMenu(false);
+  const profileMenuClassName = "profile-menu" + (showMenu ? " show" : " hide");
 
-  const firstLetter = user.username.charAt(0).toUpperCase();
+  const closeMenu = () => setShowMenu(false);
 
   return (
     <>
-      <button onClick={openMenu} className="profile-button">
-        <span className="profile-letter">{firstLetter}</span>
+      <button onClick={openMenu} className="profile-button-custom">
+        {user ? (
+          <span className="profile-initial-custom">
+            {user.username.charAt(0).toUpperCase()}
+          </span>
+        ) : (
+          <i className="fas fa-user"></i>
+        )}
       </button>
-      <ul className={ulClassName} ref={ulRef}>
+      <ul className={profileMenuClassName} ref={profileMenuRef}>
         {user ? (
           <>
-            <li>{user.username}</li>
-            <li>
+            <li className="profile-username-custom">{user.username}</li>
+            <li className="profile-posts-link-custom">
               <Link to={`/posts/${user.id}`} onClick={closeMenu}>
                 Posts
               </Link>
             </li>
-            <li>
-              <button onClick={handleLogout}>Log Out</button>
+            <li className="profile-logout-button-custom" onClick={handleLogout}>
+              Log Out
             </li>
           </>
         ) : (
           <>
-            <OpenModalButton
-              buttonText="Log In"
-              onItemClick={closeMenu}
-              modalComponent={<LoginFormModal />}
-            />
-
-            <OpenModalButton
-              buttonText="Sign Up"
-              onItemClick={closeMenu}
-              modalComponent={<SignupFormModal />}
-            />
+            <li className="profile-login-modal-custom">
+              <OpenModalButton
+                buttonText="Log In"
+                onItemClick={closeMenu}
+                modalComponent={<LoginFormModal />}
+              />
+            </li>
+            <li className="profile-signup-modal-custom">
+              <OpenModalButton
+                buttonText="Sign Up"
+                onItemClick={closeMenu}
+                modalComponent={<SignupFormModal />}
+              />
+            </li>
           </>
         )}
       </ul>
