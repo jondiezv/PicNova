@@ -13,35 +13,37 @@ function ProfileButton({ user }) {
   const profileMenuRef = useRef();
 
   const openMenu = () => {
-    if (showMenu) return;
-    setShowMenu(true);
+    setShowMenu((prevShowMenu) => !prevShowMenu);
   };
 
   useEffect(() => {
     if (!showMenu) return;
 
-    const closeMenu = (e) => {
+    function closeMenu(e) {
       if (
         profileMenuRef.current &&
         !profileMenuRef.current.contains(e.target)
       ) {
         setShowMenu(false);
       }
+    }
+
+    document.addEventListener("mousedown", closeMenu);
+
+    return () => {
+      document.removeEventListener("mousedown", closeMenu);
     };
-
-    document.addEventListener("click", closeMenu);
-
-    return () => document.removeEventListener("click", closeMenu);
   }, [showMenu]);
 
   const handleLogout = (e) => {
     e.preventDefault();
     dispatch(logout());
+    setShowMenu(false);
   };
 
-  const profileMenuClassName = "profile-menu" + (showMenu ? " show" : " hide");
-
-  const closeMenu = () => setShowMenu(false);
+  const profileMenuClassName = showMenu
+    ? "profile-menu show"
+    : "profile-menu hide";
 
   return (
     <>
@@ -59,7 +61,7 @@ function ProfileButton({ user }) {
           <>
             <li className="profile-username-custom">{user.username}</li>
             <li className="profile-posts-link-custom">
-              <Link to={`/posts/${user.id}`} onClick={closeMenu}>
+              <Link to={`/posts/${user.id}`} onClick={() => setShowMenu(false)}>
                 Posts
               </Link>
             </li>
@@ -69,20 +71,18 @@ function ProfileButton({ user }) {
           </>
         ) : (
           <>
-            <li className="profile-login-modal-custom">
+            <div className="login-signup-buttons">
               <OpenModalButton
                 buttonText="Log In"
-                onItemClick={closeMenu}
+                onItemClick={() => setShowMenu(false)}
                 modalComponent={<LoginFormModal />}
               />
-            </li>
-            <li className="profile-signup-modal-custom">
               <OpenModalButton
                 buttonText="Sign Up"
-                onItemClick={closeMenu}
+                onItemClick={() => setShowMenu(false)}
                 modalComponent={<SignupFormModal />}
               />
-            </li>
+            </div>
           </>
         )}
       </ul>

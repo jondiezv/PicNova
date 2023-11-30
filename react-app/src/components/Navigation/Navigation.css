@@ -57,27 +57,27 @@ ul.navbar a {
 }
 
 .profile-menu {
-  display: none;
+  visibility: hidden;
+  opacity: 0;
   position: absolute;
   top: 70px;
   right: 20px;
-  z-index: 11;
+  z-index: 1000;
   background-color: rgb(49, 47, 49);
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   width: max-content;
   padding: 10px;
+  transition: opacity 0.3s, visibility 0.3s;
 }
 
 .profile-menu.show {
-  display: block;
+  visibility: visible;
+  opacity: 1;
 }
 
 .profile-username-custom,
-.profile-posts-link-custom,
-.profile-logout-button-custom,
-.profile-login-button-custom,
-.profile-signup-button-custom {
+.profile-posts-link-custom {
   color: white;
   list-style: none;
   margin: 5px 0;
@@ -113,5 +113,32 @@ ul.navbar a {
 }
 
 .nav-upload:hover {
+  background-color: #558b88;
+}
+
+.login-signup-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.login-signup-buttons button {
+  color: #fff;
+  background-color: #536d8f;
+  border: 1px solid #536d8f;
+  padding: 10px 20px;
+  margin: 5px 0;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  width: 100px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+
+.login-signup-buttons button:hover {
   background-color: #558b88;
 }

@@ -26,19 +26,19 @@ const LandingPage = () => {
     <div>
       <div>
         <h2>Most Recent</h2>
-        <ul>
+        <div className="landing-cards-container">
           {posts.map((post) => (
             <li key={post.id} className="card">
               <Link to={`/post/${post.id}`}>
                 {post.image_urls.length > 0 && (
                   <img src={post.image_urls[0]} alt="Post Image" />
                 )}
-                <h3>{post.title}</h3>
+                <div className="post-title-card">{post.title}</div>
                 <p>{getCommentCount(post.id)} Comment(s)</p>
               </Link>
             </li>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );
