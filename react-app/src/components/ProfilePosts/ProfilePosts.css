@@ -1,0 +1,8 @@
+.posts-link {
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  align-items: center;
+  margin-top: 100px;
+}

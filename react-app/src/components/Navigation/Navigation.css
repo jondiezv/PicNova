@@ -5,7 +5,7 @@ ul.navbar {
   padding: 5px 5px;
   list-style: none;
   margin: 0;
-  background-image: url("https://cdn.discordapp.com/attachments/1169328578379387000/1171868618099806228/banner.png");
+  background-image: url("https://cdn.discordapp.com/attachments/1169328578379387000/1179488891506532402/banner.png");
   background-size: cover;
   background-position: center;
   box-sizing: border-box;
@@ -22,6 +22,26 @@ ul.navbar li {
   padding: 14px 16px;
 }
 
+button.profile-button-custom {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: #536d8f;
+  cursor: pointer;
+  outline: none;
+}
+
+.profile-initial-custom {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+
 .logo {
   width: auto;
   height: 40px;
@@ -36,42 +56,50 @@ ul.navbar a {
   font-weight: bold;
 }
 
-ul.navbar a:hover {
-  background-color: #149e5d;
-}
-
-.profile-dropdown {
+.profile-menu {
+  visibility: hidden;
+  opacity: 0;
   position: absolute;
-  top: 100px;
+  top: 70px;
   right: 20px;
-  z-index: 11;
+  z-index: 1000;
   background-color: rgb(49, 47, 49);
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  width: auto;
+  width: max-content;
   padding: 10px;
+  transition: opacity 0.3s, visibility 0.3s;
 }
 
-.profile-dropdown.hidden {
-  display: none;
+.profile-menu.show {
+  visibility: visible;
+  opacity: 1;
 }
 
-.profile-dropdown li {
+.profile-username-custom,
+.profile-posts-link-custom {
   color: white;
   list-style: none;
   margin: 5px 0;
   cursor: pointer;
+  display: block;
+  padding: 10px 15px;
+  text-align: left;
 }
 
-.profile-dropdown button {
-  background-color: transparent;
-  border: none;
+.profile-logout-button-custom {
+  background: none;
   color: white;
+  border: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 15px;
   cursor: pointer;
 }
 
 .nav-upload {
-  background-color: rgb(112, 159, 155);
+  background-color: #536d8f;
   border: none;
   color: white;
   padding: 10px 20px;
@@ -85,5 +113,36 @@ ul.navbar a:hover {
 }
 
 .nav-upload:hover {
-  background-color: #149e5d;
+  background-color: #558b88;
+}
+
+.login-signup-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.login-signup-buttons button {
+  color: #fff;
+  background-color: #536d8f;
+  border: 1px solid #536d8f;
+  padding: 10px 20px;
+  margin: 5px 0;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  width: 100px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+
+.login-signup-buttons button:hover {
+  background-color: #558b88;
+}
+
+.profile-button-custom .fas.fa-user {
+  color: white;
 }

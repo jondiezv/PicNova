@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { logout } from "../../store/session";
+import { Link } from "react-router-dom";
 import OpenModalButton from "../OpenModalButton";
 import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
@@ -9,62 +10,79 @@ import "./Navigation.css";
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
-  const ulRef = useRef();
+  const profileMenuRef = useRef();
 
   const openMenu = () => {
-    if (showMenu) return;
-    setShowMenu(true);
+    setShowMenu((prevShowMenu) => !prevShowMenu);
   };
 
   useEffect(() => {
     if (!showMenu) return;
 
-    const closeMenu = (e) => {
-      if (!ulRef.current.contains(e.target)) {
+    function closeMenu(e) {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(e.target)
+      ) {
         setShowMenu(false);
       }
+    }
+
+    document.addEventListener("mousedown", closeMenu);
+
+    return () => {
+      document.removeEventListener("mousedown", closeMenu);
     };
-
-    document.addEventListener("click", closeMenu);
-
-    return () => document.removeEventListener("click", closeMenu);
   }, [showMenu]);
 
   const handleLogout = (e) => {
     e.preventDefault();
     dispatch(logout());
+    setShowMenu(false);
   };
 
-  const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
-  const closeMenu = () => setShowMenu(false);
+  const profileMenuClassName = showMenu
+    ? "profile-menu show"
+    : "profile-menu hide";
 
   return (
     <>
-      <button onClick={openMenu}>
-        <i className="fas fa-user-circle" />
+      <button onClick={openMenu} className="profile-button-custom">
+        {user ? (
+          <span className="profile-initial-custom">
+            {user.username.charAt(0).toUpperCase()}
+          </span>
+        ) : (
+          <i className="fas fa-user"></i>
+        )}
       </button>
-      <ul className={ulClassName} ref={ulRef}>
+      <ul className={profileMenuClassName} ref={profileMenuRef}>
         {user ? (
           <>
-            <li>{user.username}</li>
-            <li>{user.email}</li>
-            <li>
-              <button onClick={handleLogout}>Log Out</button>
+            <li className="profile-username-custom">{user.username}</li>
+            <li className="profile-posts-link-custom">
+              <Link to={`/posts/${user.id}`} onClick={() => setShowMenu(false)}>
+                Posts
+              </Link>
+            </li>
+            <li className="profile-logout-button-custom" onClick={handleLogout}>
+              Log Out
             </li>
           </>
         ) : (
           <>
-            <OpenModalButton
-              buttonText="Log In"
-              onItemClick={closeMenu}
-              modalComponent={<LoginFormModal />}
-            />
-
-            <OpenModalButton
-              buttonText="Sign Up"
-              onItemClick={closeMenu}
-              modalComponent={<SignupFormModal />}
-            />
+            <div className="login-signup-buttons">
+              <OpenModalButton
+                buttonText="Log In"
+                onItemClick={() => setShowMenu(false)}
+                modalComponent={<LoginFormModal />}
+              />
+              <OpenModalButton
+                buttonText="Sign Up"
+                onItemClick={() => setShowMenu(false)}
+                modalComponent={<SignupFormModal />}
+              />
+            </div>
           </>
         )}
       </ul>

@@ -14,6 +14,7 @@ import EditCommentModal from "../EditCommentModal";
 import DeleteCommentModal from "../DeleteCommentModal";
 import { FaHeart } from "react-icons/fa";
 import "./PostDetails.css";
+import classNames from "classnames";
 
 const maxCommentLength = 200;
 
@@ -227,21 +228,16 @@ const PostDetails = () => {
               </button>
             </div>
           )}
-          {isUserLoggedIn && (
-            <div className="post-favorite-button">
-              <button onClick={handleFavoritesClick}>
-                {isPostInFavorites ? (
-                  <>
-                    <FaHeart className="heart-icon" /> Remove from Favorites
-                  </>
-                ) : (
-                  <>
-                    <FaHeart className="heart-icon" /> Add to Favorites
-                  </>
-                )}
-              </button>
-            </div>
-          )}
+
+          <div className="vote-container">
+            <FaHeart
+              className={classNames("vote-icon", {
+                favorited: isPostInFavorites,
+              })}
+              onClick={handleFavoritesClick}
+              size={24}
+            />
+          </div>
         </>
       ) : (
         <p>Loading...</p>
