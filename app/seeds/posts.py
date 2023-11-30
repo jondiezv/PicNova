@@ -59,8 +59,8 @@ def seed_posts():
 
     post7 = Post(
         user_id=user3.id,
-        title="who is this character and why is she everywhere",
-        description="can someone explain this meme to me i keep seeing this cat everywhere and I don't get it",
+        title="who is this character and why is it everywhere",
+        description="can someone explain this meme to me i keep seeing this thing everywhere and I don't get it",
         hidden=False,
         views=987
     )
