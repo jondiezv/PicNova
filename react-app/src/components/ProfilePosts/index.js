@@ -20,21 +20,21 @@ const ProfilePosts = () => {
     <div className="user-profile">
       <div className="posts-tab">
         <div className="posts-link">Posts</div>
-        <ul className="card-grid">
+        <ul className="landing-cards-container">
           {userPosts.map((post) => (
             <li key={post.id} className="card">
               <Link to={`/post/${post.id}`} className="card-link">
-                <img
-                  src={post.image_urls[0]}
-                  alt={post.description}
-                  className="card-img"
-                />
-                <div className="card-info">
-                  <h3 className="card-title">{post.title}</h3>
-                  <p className="card-privacy">
-                    {post.hidden ? "Private" : "Public"}
-                  </p>
-                </div>
+                {post.image_urls.length > 0 && (
+                  <img
+                    src={post.image_urls[0]}
+                    alt={post.description}
+                    className="card-img"
+                  />
+                )}
+                <div className="post-title-card">{post.title}</div>
+                <p className="card-privacy">
+                  {post.hidden ? "Private" : "Public"}
+                </p>
               </Link>
             </li>
           ))}

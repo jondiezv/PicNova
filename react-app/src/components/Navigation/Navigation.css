@@ -142,3 +142,7 @@ ul.navbar a {
 .login-signup-buttons button:hover {
   background-color: #558b88;
 }
+
+.profile-button-custom .fas.fa-user {
+  color: white;
+}
