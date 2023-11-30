@@ -9,7 +9,7 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(to right, rgba(246, 3, 226, 0.183), #06f6e652);
+  background: linear-gradient(to right, rgb(255, 154, 247), #7bfff6);
   max-width: 500px;
   width: 100%;
   box-sizing: border-box;
@@ -42,9 +42,9 @@ input[type="checkbox"] {
 }
 
 .upload-btn {
-  background-color: #1be1ef;
+  background-color: #84f4fc;
   border: none;
-  color: white;
+  color: rgb(0, 0, 0);
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
@@ -56,7 +56,7 @@ input[type="checkbox"] {
 }
 
 button:hover {
-  background-color: #458ba0;
+  background-color: #d3ff9d;
 }
 
 .error {

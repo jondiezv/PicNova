@@ -15,11 +15,14 @@ const LandingPage = () => {
     dispatch(getAllComments());
   }, [dispatch]);
 
-  const getCommentCount = (postId) => {
+  const getCommentCountText = (postId) => {
     const postComments = comments.filter(
       (comment) => comment.post_id === postId
     );
-    return postComments.length;
+    const count = postComments.length;
+    if (count === 0) return "No comments";
+    if (count === 1) return "1 comment";
+    return `${count} comments`;
   };
 
   return (
@@ -34,7 +37,7 @@ const LandingPage = () => {
                   <img src={post.image_urls[0]} alt="Post Image" />
                 )}
                 <div className="post-title-card">{post.title}</div>
-                <p>{getCommentCount(post.id)} Comment(s)</p>
+                <p>{getCommentCountText(post.id)}</p>
               </Link>
             </li>
           ))}
