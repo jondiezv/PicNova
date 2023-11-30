@@ -38,7 +38,7 @@ def seed_images():
     )
     image7 = Image(
         post_id=post7.id,
-        url="https://cdn.discordapp.com/attachments/1169328578379387000/1179893132624674816/sxetva0x2s081.png"
+        url="https://cdn.discordapp.com/attachments/1169328578379387000/1179904908976210062/fb8.jpg"
     )
     image8 = Image(
         post_id=post8.id,
