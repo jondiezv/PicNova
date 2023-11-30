@@ -9,7 +9,7 @@ def seed_images():
     post4 = Post.query.filter_by(title="Art Showcase").first()
     post5 = Post.query.filter_by(title="Foodie Delights").first()
     post6 = Post.query.filter_by(title="Nature's Beauty").first()
-    post7 = Post.query.filter_by(title="who is this character and why is she everywhere").first()
+    post7 = Post.query.filter_by(title="who is this character and why is it everywhere").first()
     post8 = Post.query.filter_by(title="rate my haul").first()
 
     image1 = Image(
