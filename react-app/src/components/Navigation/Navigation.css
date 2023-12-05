@@ -48,14 +48,6 @@ button.profile-button-custom {
   margin-left: 20px;
 }
 
-ul.navbar a {
-  display: block;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  font-weight: bold;
-}
-
 .profile-menu {
   visibility: hidden;
   opacity: 0;
@@ -67,7 +59,7 @@ ul.navbar a {
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   width: max-content;
-  padding: 10px;
+  padding: 0;
   transition: opacity 0.3s, visibility 0.3s;
 }
 
@@ -76,26 +68,33 @@ ul.navbar a {
   opacity: 1;
 }
 
-.profile-username-custom,
-.profile-posts-link-custom {
-  color: white;
+.profile-menu-item {
+  color: rgb(255, 255, 255);
+  font-weight: bold;
   list-style: none;
-  margin: 5px 0;
+  margin: 0;
   cursor: pointer;
   display: block;
   padding: 10px 15px;
   text-align: left;
+  transition: color 0.3s;
 }
 
-.profile-logout-button-custom {
-  background: none;
-  color: white;
-  border: none;
+.profile-menu-item:hover {
+  color: #d3ff9d;
+}
+
+.profile-menu-link {
+  text-decoration: none;
   display: block;
   width: 100%;
-  text-align: left;
-  padding: 10px 15px;
-  cursor: pointer;
+  color: inherit;
+  padding-left: 15px;
+}
+
+.profile-menu-text {
+  display: block;
+  padding-left: 15px;
 }
 
 .nav-upload {
@@ -145,4 +144,11 @@ ul.navbar a {
 
 .profile-button-custom .fas.fa-user {
   color: white;
+}
+
+.upload-text-btn {
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  text-decoration: none;
 }

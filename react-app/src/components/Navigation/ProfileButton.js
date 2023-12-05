@@ -59,14 +59,29 @@ function ProfileButton({ user }) {
       <ul className={profileMenuClassName} ref={profileMenuRef}>
         {user ? (
           <>
-            <li className="profile-username-custom">{user.username}</li>
-            <li className="profile-posts-link-custom">
-              <Link to={`/posts/${user.id}`} onClick={() => setShowMenu(false)}>
+            <li className="profile-menu-item">
+              <span className="profile-menu-text">{user.username}</span>
+            </li>
+            <li className="profile-menu-item">
+              <Link
+                to={`/posts/${user.id}`}
+                onClick={() => setShowMenu(false)}
+                className="profile-menu-link"
+              >
                 Posts
               </Link>
             </li>
-            <li className="profile-logout-button-custom" onClick={handleLogout}>
-              Log Out
+            <li className="profile-menu-item">
+              <Link
+                to={`/favorites/${user.id}`}
+                onClick={() => setShowMenu(false)}
+                className="profile-menu-link"
+              >
+                Favorites
+              </Link>
+            </li>
+            <li className="profile-menu-item" onClick={handleLogout}>
+              <span className="profile-menu-text">Log Out</span>
             </li>
           </>
         ) : (

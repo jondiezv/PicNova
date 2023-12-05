@@ -54,7 +54,9 @@ const PostDetails = () => {
   }, [dispatch, id, user?.id]);
 
   const isPostInFavorites =
-    user?.id && currentPost && userFavorites.includes(currentPost.id);
+    user?.id &&
+    currentPost &&
+    userFavorites.some((favorite) => favorite.post_id === currentPost.id);
 
   const handleDeleteClick = () => {
     setShowDeleteModal(true);

@@ -10,6 +10,7 @@ import PostDetails from "./components/PostDetails";
 import Upload from "./components/Upload";
 import EditPost from "./components/EditPost";
 import ProfilePosts from "./components/ProfilePosts";
+import ProfileFavorites from "./components/ProfileFavorites";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,6 +35,9 @@ function App() {
           </Route>
           <Route path="/posts/:userId">
             <ProfilePosts />
+          </Route>
+          <Route path="/favorites/:userId">
+            <ProfileFavorites />
           </Route>
           <Route
             path="/post/:id/edit"
