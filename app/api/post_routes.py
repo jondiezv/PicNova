@@ -271,7 +271,14 @@ def get_user_favorites(user_id):
         return jsonify({'error': 'Unauthorized access'}), 403
 
     favorites = Favorite.query.filter_by(user_id=user_id).all()
+    favorite_posts = [Post.query.get(favorite.post_id) for favorite in favorites]
 
-    favorites_list = [favorite.post_id for favorite in favorites]
+    favorites_list = [{
+        'post_id': post.id,
+        'image_urls': [image.url for image in post.images],
+        'title': post.title,
+        'description': post.description,
+        'hidden': post.hidden
+    } for post in favorite_posts]
 
     return jsonify(favorites_list), 200

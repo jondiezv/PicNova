@@ -20,7 +20,7 @@ function Navigation({ isLoaded }) {
       {isLoaded && sessionUser && (
         <li className="nav-item">
           <button className="nav-upload">
-            <NavLink to="/upload" className="nav-link">
+            <NavLink to="/upload" className="upload-text-btn">
               New Post
             </NavLink>
           </button>
