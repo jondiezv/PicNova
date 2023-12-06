@@ -58,8 +58,8 @@ button.profile-button-custom {
   background-color: rgb(49, 47, 49);
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  width: max-content;
-  padding: 0;
+  width: 100px;
+  padding: 10px;
   transition: opacity 0.3s, visibility 0.3s;
 }
 
