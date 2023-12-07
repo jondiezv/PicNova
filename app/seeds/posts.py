@@ -73,6 +73,14 @@ def seed_posts():
         views=987
     )
 
+    post9 = Post(
+        user_id=demo.id,
+        title="Look at that little man.",
+        description="He's so smug",
+        hidden=False,
+        views=487
+    )
+
     db.session.add(post1)
     db.session.add(post2)
     db.session.add(post3)
@@ -81,6 +89,7 @@ def seed_posts():
     db.session.add(post6)
     db.session.add(post7)
     db.session.add(post8)
+    db.session.add(post9)
     db.session.commit()
 
 

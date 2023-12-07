@@ -11,6 +11,7 @@ def seed_images():
     post6 = Post.query.filter_by(title="Nature's Beauty").first()
     post7 = Post.query.filter_by(title="who is this character and why is it everywhere").first()
     post8 = Post.query.filter_by(title="rate my haul").first()
+    post9 = Post.query.filter_by(title="Look at that little man.").first()
 
     image1 = Image(
         post_id=post_demo.id,
@@ -44,6 +45,10 @@ def seed_images():
         post_id=post8.id,
         url="https://cdn.discordapp.com/attachments/1169328578379387000/1179889333357002823/1pd7tad9o6ib1.jpg"
     )
+    image9 = Image(
+        post_id=post9.id,
+        url="https://cdn.discordapp.com/attachments/1169328578379387000/1182396583283793962/cjv8yfn.jpeg"
+    )
 
 
 
@@ -55,6 +60,7 @@ def seed_images():
     db.session.add(image6)
     db.session.add(image7)
     db.session.add(image8)
+    db.session.add(image9)
     db.session.commit()
 
 def undo_images():
