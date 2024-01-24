@@ -7,6 +7,7 @@ const GET_USER_POSTS = "posts/GET_USER_POSTS";
 const ADD_TO_FAVORITES = "posts/ADD_TO_FAVORITES";
 const REMOVE_FROM_FAVORITES = "posts/REMOVE_FROM_FAVORITES";
 const GET_USER_FAVORITES = "posts/GET_USER_FAVORITES";
+const LIKE_POST = "posts/LIKE_POST";
 
 const getAllPostsAction = (posts) => ({
   type: GET_ALL_POSTS,
@@ -50,6 +51,11 @@ const removeFromFavoritesAction = (postId) => ({
 const getUserFavoritesAction = (favorites) => ({
   type: GET_USER_FAVORITES,
   payload: favorites,
+});
+
+const likePostAction = (post) => ({
+  type: LIKE_POST,
+  payload: post,
 });
 
 export const getAllPosts = () => async (dispatch) => {
@@ -169,6 +175,24 @@ export const getUserFavorites = (userId) => async (dispatch) => {
   }
 };
 
+export const likePost = (post_id, updownvote) => async (dispatch) => {
+  try {
+    const response = await fetch(`/api/posts/${post_id}/like`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ updownvote }),
+    });
+    if (!response.ok) throw response;
+
+    const post = await response.json();
+    dispatch(likePostAction(post));
+  } catch (error) {
+    console.error("Error liking post:", error);
+  }
+};
+
 const initialState = {
   allPosts: [],
   currentPost: null,
@@ -227,6 +251,17 @@ const postsReducer = (state = initialState, action) => {
         userFavorites: state.userFavorites.filter(
           (postId) => postId !== action.payload
         ),
+      };
+    case LIKE_POST:
+      return {
+        ...state,
+        allPosts: state.allPosts.map((post) =>
+          post.id === action.payload.id ? action.payload : post
+        ),
+        currentPost:
+          state.currentPost && state.currentPost.id === action.payload.id
+            ? action.payload
+            : state.currentPost,
       };
     default:
       return state;
