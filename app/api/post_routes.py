@@ -282,3 +282,29 @@ def get_user_favorites(user_id):
     } for post in favorite_posts]
 
     return jsonify(favorites_list), 200
+
+
+@posts.route('/<int:post_id>/like', methods=['POST'])
+@login_required
+def like_post(post_id):
+    data = request.get_json()
+    updownvote = data.get('updownvote')
+
+    if updownvote not in [1, -1]:
+        return jsonify({'error': 'Invalid vote value'}), 400
+
+    like = Like.query.filter_by(user_id=current_user.id, post_id=post_id).first()
+
+    if like:
+        like.updownvote = updownvote
+    else:
+        new_like = Like(user_id=current_user.id, post_id=post_id, updownvote=updownvote)
+        db.session.add(new_like)
+
+    try:
+        db.session.commit()
+        return jsonify({'message': 'Vote recorded'}), 200
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f'Unexpected error: {e}')
+        return jsonify({'error': str(e)}), 500
